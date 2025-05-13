@@ -1,7 +1,7 @@
 {
   "name": "matrixlogger",
-  "version": "0.0.5",
-  "description": "A cloud-based logging service for Node.js applications",
+  "version": "1.0.0",
+  "description": "A logging service for Node.js applications",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -12,28 +12,24 @@
   "keywords": [
     "logging",
     "logger",
-    "nodejs",
-    "express",
-    "nestjs",
-    "fastify"
+    "nest",
+    "nestjs"
   ],
   "author": "",
-  "license": "MIT",
+  "license": "ISC",
   "dependencies": {
-    "axios": "^1.6.0",
-    "dotenv": "^16.3.1"
+    "axios": "^1.6.7",
+    "dotenv": "^16.5.0"
+  },
+  "peerDependencies": {
+    "@nestjs/common": "^10.0.0",
+    "reflect-metadata": "^0.1.13"
   },
   "devDependencies": {
-    "@types/node": "^20.0.0",
-    "@types/jest": "^29.5.0",
-    "@types/winston": "^2.4.4",
-    "@types/mongoose": "^5.11.97",
-    "typescript": "^5.0.0",
-    "jest": "^29.5.0",
-    "ts-jest": "^29.1.0"
-  },
-  "jest": {
-    "preset": "ts-jest",
-    "testEnvironment": "node"
+    "@types/jest": "^29.5.12",
+    "@types/node": "^20.11.24",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.2",
+    "typescript": "^5.3.3"
   }
 }

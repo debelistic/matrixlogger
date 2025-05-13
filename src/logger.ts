@@ -1,63 +1,59 @@
-import axios from 'axios';
-import { MatrixLoggerConfig, getConfig } from './config';
+import axios, { AxiosError } from 'axios';
+import { MatrixLoggerConfig, MATRIXLOGGER_API_URL, MATRIXLOGGER_RETRY_ATTEMPTS, MATRIXLOGGER_RETRY_DELAY } from './config';
 
 export class MatrixLogger {
   private config: MatrixLoggerConfig;
-  private baseUrl: string = 'https://api.matrixlogger.com/api/v1';
 
-  constructor(config: Partial<MatrixLoggerConfig>) {
-    this.config = getConfig(config);
+  constructor(config: MatrixLoggerConfig) {
+    this.config = config;
   }
 
   private async sendLog(level: string, message: string, metadata?: Record<string, any>) {
-    try {
-      const payload: Record<string, any> = {
-        level,
-        message,
-        metadata
-      };
-
-      // Only include appName if it's provided
-      if (this.config.appName) {
-        payload.appName = this.config.appName;
-      }
-
-      await axios.post(
-        `${this.baseUrl}/logs`,
-        payload,
-        {
+    let attempts = 0;
+    
+    while (attempts < MATRIXLOGGER_RETRY_ATTEMPTS) {
+      try {
+        await axios.post(`${MATRIXLOGGER_API_URL}/logs`, {
+          level,
+          message,
+          metadata,
+          appName: this.config.appName,
+          timestamp: new Date().toISOString()
+        }, {
           headers: {
-            'Content-Type': 'application/json',
-            'x-api-key': this.config.apiKey,
+            'x-api-key': this.config.apiKey
           }
+        });
+        return; // Success, exit the function
+      } catch (error) {
+        attempts++;
+        if (attempts === MATRIXLOGGER_RETRY_ATTEMPTS) {
+          if (error instanceof AxiosError) {
+            console.error('Failed to send log after retries:', error.message);
+          } else {
+            console.error('Failed to send log after retries:', error);
+          }
+          return;
         }
-      );
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-      console.error(`[MatrixLogger] Failed to send ${level} log: ${errorMessage}`);
-
-
-      if (process.env.NODE_ENV === 'development') {
-        // error is most times axios error, so we need to get the response
-        const errorDetails = (error as any).response?.data || (error as any).message;
-        console.error('[MatrixLogger] Error details:', errorDetails);
+        // Wait before retrying
+        await new Promise(resolve => setTimeout(resolve, MATRIXLOGGER_RETRY_DELAY));
       }
     }
   }
 
-  public async info(message: string, metadata?: Record<string, any>) {
+  info(message: string, metadata?: Record<string, any>) {
     return this.sendLog('info', message, metadata);
   }
 
-  public async error(message: string, metadata?: Record<string, any>) {
+  error(message: string, metadata?: Record<string, any>) {
     return this.sendLog('error', message, metadata);
   }
 
-  public async warn(message: string, metadata?: Record<string, any>) {
+  warn(message: string, metadata?: Record<string, any>) {
     return this.sendLog('warn', message, metadata);
   }
 
-  public async debug(message: string, metadata?: Record<string, any>) {
+  debug(message: string, metadata?: Record<string, any>) {
     return this.sendLog('debug', message, metadata);
   }
 }
