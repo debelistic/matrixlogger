@@ -27,6 +27,23 @@ export class MatrixLogger {
         return; // Success, exit the function
       } catch (error) {
         attempts++;
+        
+        if (error instanceof AxiosError) {
+          // Handle rate limiting
+          if (error.response?.status === 429) {
+            const retryAfter = error.response.headers['retry-after'];
+            const delay = retryAfter ? parseInt(retryAfter) * 1000 : MATRIXLOGGER_RETRY_DELAY * Math.pow(2, attempts);
+            
+            if (attempts === MATRIXLOGGER_RETRY_ATTEMPTS) {
+              console.error('Rate limit exceeded. Please try again later.');
+              return;
+            }
+            
+            await new Promise(resolve => setTimeout(resolve, delay));
+            continue;
+          }
+        }
+
         if (attempts === MATRIXLOGGER_RETRY_ATTEMPTS) {
           if (error instanceof AxiosError) {
             console.error('Failed to send log after retries:', error.message);
@@ -35,7 +52,8 @@ export class MatrixLogger {
           }
           return;
         }
-        // Wait before retrying
+
+        // Wait before retrying for other errors
         await new Promise(resolve => setTimeout(resolve, MATRIXLOGGER_RETRY_DELAY));
       }
     }

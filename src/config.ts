@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-export const MATRIXLOGGER_API_URL = 'https://api.matrixlogger.com';
+export const MATRIXLOGGER_API_URL = 'https://api.matrixlogger.com/api/v1';
 export const MATRIXLOGGER_RETRY_ATTEMPTS = 3;
 export const MATRIXLOGGER_RETRY_DELAY = 1000;
 
