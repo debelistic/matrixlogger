@@ -27,8 +27,8 @@ export class MatrixLogger {
         payload,
         {
           headers: {
-            'Authorization': `Bearer ${this.config.apiKey}`,
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'x-api-key': this.config.apiKey,
           }
         }
       );
