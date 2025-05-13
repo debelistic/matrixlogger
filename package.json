@@ -1,6 +1,6 @@
 {
   "name": "matrixlogger",
-  "version": "1.0.1",
+  "version": "0.0.6",
   "description": "A logging service for Node.js applications",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -38,6 +38,13 @@
     "moduleFileExtensions": ["ts", "js"],
     "transform": {
       "^.+\\.ts$": "ts-jest"
-    }
+    },
+    "testMatch": ["**/*.test.ts"],
+    "verbose": true,
+    "forceExit": true,
+    "clearMocks": true,
+    "resetMocks": true,
+    "restoreMocks": true,
+    "detectOpenHandles": true
   }
 }
