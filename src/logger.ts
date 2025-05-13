@@ -3,7 +3,7 @@ import { MatrixLoggerConfig, getConfig } from './config';
 
 export class MatrixLogger {
   private config: MatrixLoggerConfig;
-  private baseUrl: string = 'https://api.matrixlogger.com/v1';
+  private baseUrl: string = 'https://api.matrixlogger.com/api/v1';
 
   constructor(config: Partial<MatrixLoggerConfig>) {
     this.config = getConfig(config);
