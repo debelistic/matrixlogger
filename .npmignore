@@ -1,0 +1,29 @@
+# Source files
+src/
+test/
+.github/
+
+# Development files
+.git/
+.gitignore
+.env
+.env.*
+*.log
+coverage/
+.vscode/
+.idea/
+
+# Build files
+dist/test/
+*.test.js
+*.test.d.ts
+
+# Config files
+tsconfig.json
+jest.config.js
+.eslintrc
+.prettierrc
+
+# Documentation
+CHANGELOG.md
+CONTRIBUTING.md 
