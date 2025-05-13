@@ -38,7 +38,9 @@ export class MatrixLogger {
 
 
       if (process.env.NODE_ENV === 'development') {
-        console.error('[MatrixLogger] Error details:', error);
+        // error is most times axios error, so we need to get the response
+        const errorDetails = (error as any).response?.data || (error as any).message;
+        console.error('[MatrixLogger] Error details:', errorDetails);
       }
     }
   }
